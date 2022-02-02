@@ -1,14 +1,15 @@
 package drivermanager;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
-import org.openqa.selenium.WebDriver;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
+import org.openqa.selenium.WebDriver;
 
 public class DriverModule extends AbstractModule {
 
@@ -22,6 +23,10 @@ public class DriverModule extends AbstractModule {
         bind(DriverManager.class)
                 .annotatedWith(Names.named("firefox"))
                 .to(FirefoxDriverManager.class)
+                .in(Scopes.SINGLETON);
+        bind(DriverManager.class)
+                .annotatedWith(Names.named("remote"))
+                .to(RemoteWebDriverManager.class)
                 .in(Scopes.SINGLETON);
 
         bind(String.class).annotatedWith(Names.named("platform")).toInstance(getPlatform());
@@ -39,6 +44,6 @@ public class DriverModule extends AbstractModule {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return System.getProperty("mobile.platform") != null ? System.getProperty("web.platform") : fileProperties.getProperty("web.platform");
+        return System.getProperty("BROWSER") != null ? System.getProperty("BROWSER") : fileProperties.getProperty("BROWSER");
     }
 }
